@@ -1,8 +1,11 @@
 {
   "name": "react-datastudio",
   "version": "0.1.0",
-  "main": "src/index.ts",
+  "main": "dist/react-datastudio.js",
+  "module": "dist/react-datastudio.mjs",
+  "typings": "dist/react-datastudio.d.ts",
   "scripts": {
+    "build": "rollup -c",
     "lint": "prettier --write ."
   },
   "dependencies": {
@@ -11,8 +14,12 @@
   "devDependencies": {
     "@google/dscc": "^0.3.17",
     "@types/react": "^17.0.10",
+    "esbuild": "^0.12.15",
     "prettier": "2.2.1",
     "react": "^17.0.0",
+    "rollup": "^2.52.8",
+    "rollup-plugin-dts": "^3.0.2",
+    "rollup-plugin-esbuild": "^4.5.0",
     "typescript": "^4.1.2"
   },
   "peerDependencies": {
