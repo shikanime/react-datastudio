@@ -1,5 +1,6 @@
 import {
   FilterInteractionData,
+  getComponentId,
   getHeight,
   getWidth,
   InteractionId,
@@ -13,7 +14,7 @@ import {
   tableTransform
 } from "@google/dscc";
 import { useDebounce } from "@react-hook/debounce";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export interface VisualizationSizeOptions {
   wait?: number;
@@ -21,6 +22,17 @@ export interface VisualizationSizeOptions {
 }
 
 const getSize = () => [getWidth(), getHeight()] as const;
+
+export const useDataStudioComponentId = () => {
+  const [componentId] = useState(() => {
+    try {
+      return getComponentId()
+    } catch {
+      return null
+    }
+  })
+  return componentId
+}
 
 export const useDataStudioVisualizationSize = (
   options: VisualizationSizeOptions = {}
@@ -48,9 +60,11 @@ export interface TransformOptions<T> {
 
 export function useDataStudioTransform<T>(options: TransformOptions<T>) {
   const { wait, leading, transform } = options;
+  const componentId = useDataStudioComponentId()
   const [objFmt, setObjFmt] = useDebounce<T | null>(null, wait, leading);
 
   useEffect(() => {
+    if (!componentId) return
     return subscribeToData(
       (data) => {
         setObjFmt(() => data);
@@ -75,7 +89,9 @@ export function useDataStudioTableTransform(
 }
 
 export function useDataStudioFilterInteraction(id: InteractionId) {
+  const componentId = useDataStudioComponentId()
   return (data: FilterInteractionData) => {
+    if (!componentId) return
     sendInteraction(id, InteractionType.FILTER, data);
   };
 }
